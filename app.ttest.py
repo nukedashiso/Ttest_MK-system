@@ -305,7 +305,7 @@ else:
                     if row['status']=='gray': symbol="N/A"
                     elif row['p_val']<0.05: symbol="*"
                     annotations.append(dict(x=row['測站'], y=row['測項'], text=symbol, showarrow=False,
-                                            font=dict(color='white' if row['status']=='red' else 'black', size=18)))
+                                            font=dict(color='white' if row['status']=='red' else 'black', size=12)))
                 
                 color_map = {'gray': '#BDC3C7', 'green': '#2ECC71', 'red': '#E74C3C'}
                 fig_h = go.Figure()
@@ -319,7 +319,9 @@ else:
                 ))
                 
                 fig_h.update_layout(annotations=annotations, height=400, plot_bgcolor='white',
-                                    xaxis=dict(showgrid=False), yaxis=dict(showgrid=False))
+                                    xaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=16)), 
+                                    yaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=16))
+                                   )
                 
                 # Legend
                 legend_items = [('數據不足', color_map['gray']), ('無顯著變化', color_map['green']), ('具顯著變化', color_map['red'])]
@@ -454,5 +456,6 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 

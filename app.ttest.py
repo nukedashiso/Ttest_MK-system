@@ -320,13 +320,15 @@ else:
                 
                 fig_h.update_layout(annotations=annotations, height=400, plot_bgcolor='white',
                                     xaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=16)), 
-                                    yaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=16))
+                                    yaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=16)),
+                                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, # [新增] 設定圖例文字大小
+                                                font=dict(size=16, family="Arial"))
                                    )
                 
                 # Legend
                 legend_items = [('數據不足', color_map['gray']), ('無顯著變化', color_map['green']), ('具顯著變化', color_map['red'])]
                 for l, c in legend_items:
-                    fig_h.add_trace(go.Scatter(x=[None], y=[None], mode='markers', marker=dict(size=12, color=c), name=l))
+                    fig_h.add_trace(go.Scatter(x=[None], y=[None], mode='markers', marker=dict(size=15, color=c), name=l))
                 fig_h.update_layout(legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
                 st.plotly_chart(fig_h, use_container_width=True)
 
@@ -456,6 +458,7 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 
 

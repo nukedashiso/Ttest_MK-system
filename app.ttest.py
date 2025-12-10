@@ -345,7 +345,7 @@ else:
                         st.info("數據不足。")
                     else:
                         fig_est = make_subplots(rows=1, cols=2, column_widths=[0.6, 0.4], 
-                                              subplot_titles=(f"{t1_it} 分佈", f"差異估計"))
+                                              subplot_titles=(f"{t1_it} 分佈", f"差異估計 ({res['test_method']})"))
                         
                         p_color = '#E74C3C' if res['status'] == 'red' else '#2ECC71'
                         colors = {'施工前': 'gray', '施工期間': p_color}
@@ -454,3 +454,4 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+

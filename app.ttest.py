@@ -322,7 +322,7 @@ else:
                                     xaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=20)), 
                                     yaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=20)),
                                     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, # [新增] 設定圖例文字大小
-                                                font=dict(size=20, family="Arial"))
+                                                font=dict(size=20, family="Arial",color='black'))
                                    )
                 
                 # Legend
@@ -458,6 +458,7 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 
 

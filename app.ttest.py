@@ -319,8 +319,8 @@ else:
                 ))
                 
                 fig_h.update_layout(annotations=annotations, height=400, plot_bgcolor='white',
-                                    xaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=20), color='black'), 
-                                    yaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=20), color='black'),
+                                    xaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=20, color='black')), 
+                                    yaxis=dict(showgrid=False, zeroline=False, tickfont=dict(size=20, color='black')),
                                     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, # [新增] 設定圖例文字大小
                                                 font=dict(size=20, family="Arial",color='black'))
                                    )
@@ -458,6 +458,7 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 
 

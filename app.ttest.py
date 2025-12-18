@@ -456,7 +456,7 @@ else:
                     title=f"{mk_st} - {mk_it} 長期趨勢分析",title_font=dict(size=28, color="black"),
                     yaxis_title=f"數值 ({mk_res['unit']})",
                     hovermode="x unified",
-                    legend=dict(orientation="h", y=1.1, font=dict(size=20))
+                    legend=dict(orientation="h", y=1.1, font=dict(size=18))
                 )
                 fig_mk.update_xaxes(title_font=dict(size=18, color="black"), tickfont=dict(size=18, color="black"))
                 fig_mk.update_yaxes(title_font=dict(size=18, color="black"), tickfont=dict(size=18, color="black"))
@@ -466,6 +466,7 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 
 

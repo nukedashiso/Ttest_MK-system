@@ -453,7 +453,7 @@ else:
                     fig_mk.add_hline(y=limit_info['法規下限'], line_dash="dash", line_color="red", annotation_text="下限")
                 
                 fig_mk.update_layout(
-                    title=f"{mk_st} - {mk_it} 長期趨勢分析",title_font=dict(size=28, color="black",
+                    title=f"{mk_st} - {mk_it} 長期趨勢分析",title_font=dict(size=28, color="black"),
                     yaxis_title=f"數值 ({mk_res['unit']})",
                     hovermode="x unified",
                     legend=dict(orientation="h", y=1.1)
@@ -466,6 +466,7 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 
 

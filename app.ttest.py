@@ -371,7 +371,8 @@ else:
                             fig_est.add_trace(go.Scatter(x=['差異'], y=[res['diff']], mode='markers', marker=dict(color='black'),
                                                        error_y=dict(type='data', array=[res['ci_upper']-res['diff']], arrayminus=[res['diff']-res['ci_lower']])), row=1, col=2)
                         
-                        fig_est.update_layout(title_text=f"狀態: {res['status_text']} (P={res['p_val']:.4f})")
+                        fig_est.update_layout(title_text=f"狀態: {res['status_text']} (P={res['p_val']:.4f})",
+                                             title_font=dict(size=20, color="black"), font=dict(size=14, color="black"))
                         st.plotly_chart(fig_est, use_container_width=True)
 
         # ==========================================
@@ -458,6 +459,7 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 
 

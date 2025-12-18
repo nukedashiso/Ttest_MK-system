@@ -453,17 +453,20 @@ else:
                     fig_mk.add_hline(y=limit_info['法規下限'], line_dash="dash", line_color="red", annotation_text="下限")
                 
                 fig_mk.update_layout(
-                    title=f"{mk_st} - {mk_it} 長期趨勢分析",
+                    title=f"{mk_st} - {mk_it} 長期趨勢分析",title_font=dict(size=28, color="black",
                     yaxis_title=f"數值 ({mk_res['unit']})",
                     hovermode="x unified",
                     legend=dict(orientation="h", y=1.1)
                 )
+                fig_mk.update_xaxes(title_font=dict(size=18, color="black"), tickfont=dict(size=18, color="black"))
+                fig_mk.update_yaxes(title_font=dict(size=18, color="black"), tickfont=dict(size=18, color="black"))
                 st.plotly_chart(fig_mk, use_container_width=True)
                 
                 st.info(f"💡 **Sen's Slope 解讀**：數值為 `{mk_res['slope']:.4f}`，代表每個採樣週期，數值平均變化約 `{mk_res['slope']:.4f}`。")
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 
 

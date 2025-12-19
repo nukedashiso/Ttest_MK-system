@@ -376,8 +376,8 @@ else:
                                               annotations=[
                                 dict(font_size=24, font_color="black") for _ in fig_est.layout.annotations
                             ])
-                        fig_est.update_xaxes(title_font=dict(size=18, color="black"), tickfont=dict(size=18, color="black"))
-                        fig_est.update_yaxes(title_font=dict(size=18, color="black"), tickfont=dict(size=18, color="black"))
+                        fig_est.update_xaxes(title_font=dict(size=20, color="black"), tickfont=dict(size=20, color="black"))
+                        fig_est.update_yaxes(title_font=dict(size=20, color="black"), tickfont=dict(size=20, color="black"))
                         st.plotly_chart(fig_est, use_container_width=True)
 
         # ==========================================
@@ -466,6 +466,7 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 
 

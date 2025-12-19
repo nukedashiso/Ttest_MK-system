@@ -119,7 +119,7 @@ def perform_stats(df_sub):
         try:
             if is_normal:
                 stat, p_val = stats.ttest_ind(group_pre, group_dur, equal_var=False)
-                test_method = "t-test"
+                test_method = "Welch's t-test"
             else:
                 stat, p_val = stats.mannwhitneyu(group_pre, group_dur)
                 test_method = "Mann-Whitney"
@@ -466,6 +466,7 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 
 

@@ -47,27 +47,35 @@ def get_excel_template():
 def process_censored_data(row):
     """處理 <, ND, －"""
     val = row['數值']
+    mdl_raw = row['MDL'] # 讀取原始MDL值
+
+    # 設置一個統一的精度，例如 6 位小數
+    ROUND_PRECISION = 6 
+
+    mdl = np.nan
     try:
-        mdl = float(row['MDL'])
+        mdl_float = float(mdl_raw)
+        mdl = np.round(mdl_float, ROUND_PRECISION) # 在這裡對MDL進行四捨五入
     except:
         mdl = np.nan
     
     if isinstance(val, (int, float)):
-        return float(val)
+        # 對於正常數值也進行四捨五入，確保所有數值精度一致
+        return np.round(float(val), ROUND_PRECISION)
     
     val_str = str(val).strip().upper()
     
     if "ND" in val_str or "N.D." in val_str:
         return mdl if pd.notna(mdl) else np.nan
 
-    if val_str in ["-", "－"]: # 處理減號
+    if val_str in ["-", "－"]:
         return mdl if pd.notna(mdl) else np.nan
             
     if "<" in val_str:
         try:
             num_text = val_str.replace("<", "").strip()
             if num_text:
-                return float(num_text)
+                return np.round(float(num_text), ROUND_PRECISION) # 對 < 轉換的數值也四捨五入
             elif pd.notna(mdl):
                 return mdl
             else:
@@ -76,7 +84,7 @@ def process_censored_data(row):
             return np.nan
 
     try:
-        return float(val_str)
+        return np.round(float(val_str), ROUND_PRECISION) # 對其他可轉換數值也四捨五入
     except:
         return np.nan
 
@@ -97,14 +105,15 @@ def perform_stats(df_sub):
     unit = df_sub['單位'].iloc[0] if pd.notna(df_sub['單位'].iloc[0]) else ""
     item_name = df_sub['測項'].iloc[0]
 
-    mean_pre = np.mean(group_pre)
-    mean_dur = np.mean(group_dur)
-    diff = mean_dur - mean_pre
+    ROUND_DECIMALS = 6 # 與 process_censored_data 中使用的精度一致
+    mean_pre = np.round(np.mean(group_pre), ROUND_DECIMALS)
+    mean_dur = np.round(np.mean(group_dur), ROUND_DECIMALS)
+    diff = mean_dur - mean_pre 
     
-    if np.array_equal(group_pre, group_dur) or (np.std(group_pre) == 0 and np.std(group_dur) == 0):
+    if mean_pre == mean_dur: # 這裡的比較會更可靠
         p_val = 1.0
         test_method = "無變化(Constant)"
-        is_normal = True 
+        is_normal = True    
     else:
         try:
             if len(group_pre) < 3 or len(group_dur) < 3:
@@ -466,6 +475,7 @@ else:
 
     except Exception as e:
         st.error(f"執行錯誤：{e}")
+
 
 
 

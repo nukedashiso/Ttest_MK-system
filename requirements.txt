@@ -5,4 +5,3 @@ scipy
 plotly
 pymannkendall
 openpyxl
-xlsxwriter

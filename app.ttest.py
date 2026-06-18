@@ -88,34 +88,26 @@ def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def parse_numeric_like(value: Any) -> float:
-    """
-    將環境監測常見文字轉為 float。
-    規則：
-    - 數字：直接回傳
-    - <0.02：回傳 0.02
-    - ND / N.D. / - / － / —：回傳 NaN
-    - 無法轉換：回傳 NaN
-    """
-    if pd.isna(value):
-        return np.nan
+def parse_numeric_like(value):                                             # 將各種輸入格式轉換為數值(float), 主要將存儲格轉為數值, 其餘計算在process_censored_data處理
+    if pd.isna(value):                                                     # 若為 NaN、None、空儲存格
+        return np.nan                                                      # 直接回傳缺值
+    if isinstance(value, (int, float, np.integer, np.floating)):           # 若本身已經是數值型態
+        return round(float(value), ROUND_PRECISION)                        # 統一轉 float 並依設定小數位數四捨五入
 
-    if isinstance(value, (int, float, np.integer, np.floating)):
-        return round(float(value), ROUND_PRECISION)
+    text = str(value).strip().upper()                                      # 轉成字串, 去除前後空白, 統一轉大寫
 
-    text = str(value).strip().upper()
-    if text in {"", "-", "－", "—", "ND", "N.D.", "NAN", "NONE"}:
-        return np.nan
+    if text in {"", "-", "－", "—", "ND", "N.D.", "NAN", "NONE"}:          # 常見缺值表示方式
+        return np.nan                                                      # 統一視為缺值
+    if text.startswith("<"):                                               # 偵測 "<0.02" 之類資料
+        return np.nan                                                      # 不在此函式處理, 交由 process_censored_data() 處理
 
-    text = text.replace(",", "")
-    text = text.replace("<", "").strip()
+    text = text.replace(",", "")                                           # 移除千分位逗號, 例如：1,234.56 → 1234.56
 
-    try:
-        return round(float(text), ROUND_PRECISION)
-    except ValueError:
-        return np.nan
-
-
+    try:                                                                   # 嘗試轉換成 float
+        return round(float(text), ROUND_PRECISION)                         # 成功則回傳數值
+    except ValueError:                                                     # 無法轉換
+        return np.nan                                                      # 回傳缺值
+        
 def process_censored_data(row: pd.Series) -> float:
     """
     處理數值欄位。

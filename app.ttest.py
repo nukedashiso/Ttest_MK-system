@@ -47,7 +47,6 @@ STATUS_CODE_MAP = {
     "red": 2,
 }
 
-
 # =========================================================
 # 1. 資料模板
 # =========================================================
@@ -77,7 +76,6 @@ def get_excel_template() -> bytes:
 
     return output.getvalue()
 
-
 # =========================================================
 # 2. 資料清理與檢查
 # =========================================================
@@ -86,8 +84,10 @@ def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df.columns = df.columns.astype(str).str.strip()
     return df
-
-
+    
+# =========================================================
+# 2.1 儲存格資料轉成數值
+# =========================================================
 def parse_numeric_like(value):                                             # 將各種輸入格式轉換為數值(float), 主要將存儲格轉為數值, 其餘計算在process_censored_data處理
     if pd.isna(value):                                                     # 若為 NaN、None、空儲存格
         return np.nan                                                      # 直接回傳缺值
@@ -108,33 +108,55 @@ def parse_numeric_like(value):                                             # 將
     except ValueError:                                                     # 無法轉換
         return np.nan                                                      # 回傳缺值
         
-def process_censored_data(row: pd.Series) -> float:
-    """
-    處理數值欄位。
-    - 若數值可轉換，使用數值本身
-    - 若數值為 ND / - / － / —，且 MDL 有效，使用 MDL
-    - 若 <x，使用 x
-    """
-    raw_value = row.get("數值", np.nan)
-    mdl_value = parse_numeric_like(row.get("MDL", np.nan))
+# =========================================================
+# 2.2 處理ND、<MDL 等環境監測常見資料
+# =========================================================       
+def process_censored_data(row):                                            # 處理 ND、<MDL 等環境監測常見資料
+    raw_value = row.get("數值", np.nan)                                    # 取得原始測值
+    mdl_value = parse_numeric_like(
+        row.get("MDL", np.nan)
+    )                                                                      # 取得 MDL並轉成數值
+   
+    if pd.isna(raw_value):                                                 # 若測值本身為空
+        return np.nan                                                      # 直接回傳缺值
 
-    if pd.isna(raw_value):
-        return mdl_value if pd.notna(mdl_value) else np.nan
+    text = str(raw_value).strip().upper().replace(",", "")                 # 統一格式, 去空白, 轉大寫, 移除千分位
+    if text in {"ND", "N.D.", "-", "－", "—"}:                             # 未檢出或缺值符號
+        if pd.notna(mdl_value):                                            # MDL存在, 使用 MDL/2
+            return round(
+                mdl_value / 2,
+                ROUND_PRECISION
+            )
+        return np.nan                                                      # MDL不存在則回傳缺值
+    
+    if text.startswith("<"):                                               # 偵測 <0.02
+        try:                                                               # 去掉 "<", 嘗試取得數值部分
+            censored_value = float(
+                text.replace("<", "").strip()
+            )
+        
+            return round(
+                censored_value / 2,
+                ROUND_PRECISION
+            )                                                              # 使用檢量線濃度的一半
 
-    text = str(raw_value).strip().upper()
+        except ValueError:                                                 # 若格式異常
+            if pd.notna(mdl_value):                                        # 有MDL, 改用 MDL/2
+                return round(
+                    mdl_value / 2,
+                    ROUND_PRECISION
+                )
+            return np.nan                                                 # 否則缺值
 
-    if text in {"ND", "N.D.", "-", "－", "—"}:
-        return mdl_value if pd.notna(mdl_value) else np.nan
-
-    parsed = parse_numeric_like(raw_value)
-    if pd.notna(parsed):
-        return parsed
-
-    return mdl_value if pd.notna(mdl_value) else np.nan
-
+    parsed = parse_numeric_like(raw_value)                                # 一般數值處理
+    if pd.notna(parsed):                                                  # 成功轉換
+        return parsed                                                     # 回傳原數值
+    return np.nan                                                         # 其餘無法辨識資料, 一律回傳缺值
+# =========================================================
+# 2.3 檢查必要欄位並完成資料前處理
+# =========================================================       
 
 def validate_and_prepare_data(df: pd.DataFrame) -> pd.DataFrame:
-    """檢查必要欄位並完成資料前處理。"""
     df = normalize_columns(df)
 
     required_cols = ["測站", "測項", "時期", "數值"]
@@ -168,7 +190,6 @@ def validate_and_prepare_data(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df.dropna(subset=["數值", "日期"])
     return df
-
 
 # =========================================================
 # 3. 統計檢定

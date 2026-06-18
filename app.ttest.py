@@ -155,7 +155,6 @@ def process_censored_data(row):                                            # 處
 # =========================================================
 # 2.3 檢查必要欄位並完成資料前處理
 # =========================================================       
-
 def validate_and_prepare_data(df: pd.DataFrame) -> pd.DataFrame:
     df = normalize_columns(df)
 
@@ -185,6 +184,33 @@ def validate_and_prepare_data(df: pd.DataFrame) -> pd.DataFrame:
     df["測站"] = df["測站"].astype(str).str.strip()
     df["測項"] = df["測項"].astype(str).str.strip()
     df["時期"] = df["時期"].astype(str).str.strip()
+    df["單位"] = df["單位"].astype(str).str.strip()
+
+    # =====================================================
+    # 測項名稱與單位顯示標準化：處理上下標
+    # =====================================================
+    df["測項"] = df["測項"].replace({
+        "PM2.5": "PM₂.₅",
+        "PM10": "PM₁₀",
+        "NO2": "NO₂",
+        "SO2": "SO₂",
+        "CO2": "CO₂",
+        "O3": "O₃",
+        "NH3-N": "NH₃-N",
+        "NH4-N": "NH₄-N",
+        "NO2-N": "NO₂-N",
+        "NO3-N": "NO₃-N",
+        "PO4-P": "PO₄-P"
+    })
+
+    df["單位"] = df["單位"].replace({
+        "ug/m3": "μg/m³",
+        "μg/m3": "μg/m³",
+        "m3/min": "m³/min",
+        "m3/day": "m³/day",
+        "m2": "m²",
+    })
+
     df["數值_原始"] = df["數值"].astype(str)
     df["數值"] = df.apply(process_censored_data, axis=1)
 

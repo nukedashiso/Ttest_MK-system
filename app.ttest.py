@@ -513,7 +513,7 @@ def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
             )
         )
 
-    height = max(420, 45 * plot_df["測項"].nunique() + 120)
+    height = max(420, 55 * plot_df["測項"].nunique() + 120)
     fig.update_layout(
         annotations=annotations,
         height=height,

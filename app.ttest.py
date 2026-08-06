@@ -468,7 +468,7 @@ def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
                 showarrow=False,
                 font=dict(
                     color=font_color,
-                    size=14,
+                    size=16,
                 ),
                 align="center",
             )

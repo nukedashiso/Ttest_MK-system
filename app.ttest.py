@@ -410,7 +410,7 @@ def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
         if row["status"] == "gray" or pd.isna(row["p_val"]):
             cell_text = "N/A"
         else:
-            cell_text = f"p={row['p_val']:.3f}"
+            cell_text = f"<i>p</i>={row['p_val']:.3f}"
 
         font_color = "white" if row["status"] == "red" else "black"
         annotations.append(

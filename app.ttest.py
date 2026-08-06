@@ -419,7 +419,7 @@ def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
                 y=row["測項"],
                 text=cell_text,
                 showarrow=False,
-                font=dict(color=font_color, size=13),
+                font=dict(color=font_color, size=16),
             )
         )
 

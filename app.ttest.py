@@ -410,7 +410,11 @@ def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
         if row["status"] == "gray" or pd.isna(row["p_val"]):
             cell_text = "N/A"
         else:
-            cell_text = f"<i>p</i>={row['p_val']:.3f}"
+            pre_text = ("N/A" if pd.isna(row["pre_mean"]) else f"{row['pre_mean']:.3f}")
+            dur_text = ("N/A" if pd.isna(row["dur_mean"]) else f"{row['dur_mean']:.3f}")
+            
+            method_code = TEST_METHOD_CODE_MAP.get(row["test_method"], "—",)
+            cell_text = (f"{pre_text} → {dur_text}"f"<br><i>p</i>={row['p_val']:.3f}｜{method_code}")
 
         font_color = "white" if row["status"] == "red" else "black"
         annotations.append(
@@ -420,6 +424,7 @@ def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
                 text=cell_text,
                 showarrow=False,
                 font=dict(color=font_color, size=18),
+                align="center",
             )
         )
 

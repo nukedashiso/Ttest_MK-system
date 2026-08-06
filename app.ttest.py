@@ -414,7 +414,9 @@ def perform_mk_analysis(df_sub: pd.DataFrame) -> dict[str, Any] | None:
 # 4. 圖表
 # =========================================================
 def format_value(value: Any) -> str:
-    """將矩陣中的數值格式化至小數後 3 位。"""
+    """
+    將矩陣中的數值格式化至小數後 3 位。
+    """
     if value is None or pd.isna(value):
         return "N/A"
     try:
@@ -423,7 +425,13 @@ def format_value(value: Any) -> str:
         return "N/A"
 
 def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
-    """建立異常偵測矩陣：每格顯示 p-value，小數後 3 位。"""
+    """
+    建立異常偵測矩陣。
+
+    紅色：顯示施工前與施工期間平均值、p-value及檢定方法。
+    綠色：僅顯示p-value及檢定方法。
+    灰色：顯示N/A。
+    """
     plot_df = res_df.copy()
     plot_df["status_code"] = plot_df["status"].map(STATUS_CODE_MAP).fillna(0)
 
@@ -450,22 +458,21 @@ def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
             cell_text = (f"<i>p</i>={p_val:.3f}｜{method_code}")
         else:
             cell_text = f"未知狀態：{status}"
-
-    font_color = "white" if status == "red" else "black"
-
-    annotations.append(
-        dict(
-            x=row["測站"],
-            y=row["測項"],
-            text=cell_text,
-            showarrow=False,
-            font=dict(
-                color=font_color,
-                size=14,
-            ),
-            align="center",
+            
+        font_color = "white" if status == "red" else "black"
+        annotations.append(
+            dict(
+                x=row["測站"],
+                y=row["測項"],
+                text=cell_text,
+                showarrow=False,
+                font=dict(
+                    color=font_color,
+                    size=14,
+                ),
+                align="center",
+            )
         )
-    )
 
     customdata = np.stack(
         [

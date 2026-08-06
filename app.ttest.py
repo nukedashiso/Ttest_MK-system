@@ -365,7 +365,7 @@ def perform_stats(df_sub: pd.DataFrame) -> dict[str, Any]:
     })
 
     return base_result
-====================================================================    
+#====================================================================    
 def format_test_method_code(test_method: Any) -> str:
     """將統計檢定方法轉換為矩陣顯示代碼。"""
     method_map = {
@@ -378,7 +378,7 @@ def format_test_method_code(test_method: Any) -> str:
     if test_method is None or pd.isna(test_method):
         return "—"
     return method_map.get(str(test_method), "—")
-=====================================================================
+#=====================================================================
 
 def perform_mk_analysis(df_sub: pd.DataFrame) -> dict[str, Any] | None:
     """執行 Mann-Kendall 趨勢檢定。"""

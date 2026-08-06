@@ -400,6 +400,15 @@ def perform_mk_analysis(df_sub: pd.DataFrame) -> dict[str, Any] | None:
 # =========================================================
 # 4. 圖表
 # =========================================================
+def format_value(value: Any) -> str:
+    """將矩陣中的數值格式化至小數後 3 位。"""
+    if value is None or pd.isna(value):
+        return "N/A"
+    try:
+        return f"{float(value):.3f}"
+    except (TypeError, ValueError):
+        return "N/A"
+
 def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
     """建立異常偵測矩陣：每格顯示 p-value，小數後 3 位。"""
     plot_df = res_df.copy()

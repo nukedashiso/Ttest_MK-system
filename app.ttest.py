@@ -365,7 +365,20 @@ def perform_stats(df_sub: pd.DataFrame) -> dict[str, Any]:
     })
 
     return base_result
+====================================================================    
+def format_test_method_code(test_method: Any) -> str:
+    """將統計檢定方法轉換為矩陣顯示代碼。"""
+    method_map = {
+        "Welch's t-test": "W",
+        "Mann-Whitney U": "U",
+        "無變化(Constant)": "C",
+        "N/A": "—",
+    }
 
+    if test_method is None or pd.isna(test_method):
+        return "—"
+    return method_map.get(str(test_method), "—")
+=====================================================================
 
 def perform_mk_analysis(df_sub: pd.DataFrame) -> dict[str, Any] | None:
     """執行 Mann-Kendall 趨勢檢定。"""
@@ -422,11 +435,11 @@ def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
             pre_text = format_value(row.get("mean_pre", np.nan))
             dur_text = format_value(row.get("mean_dur", np.nan))
             
-            method_code = TEST_METHOD_CODE_MAP.get(
+            method_code = format_test_method_code(
                 row.get("test_method", "N/A"),
-                "—",
             )            
-            cell_text = (f"{pre_text} → {dur_text}"f"<br><i>p</i>={row['p_val']:.3f}｜{method_code}")
+            cell_text = (f"{pre_text} → {dur_text}"
+                         f"<br><i>p</i>={row['p_val']:.3f}｜{method_code}")
 
         font_color = "white" if row["status"] == "red" else "black"
         annotations.append(

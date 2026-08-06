@@ -429,29 +429,43 @@ def build_abnormal_matrix(res_df: pd.DataFrame) -> go.Figure:
 
     annotations = []
     for _, row in plot_df.iterrows():
-        if row["status"] == "gray" or pd.isna(row["p_val"]):
+        status = row.get("status", "gray")
+        p_val = row.get("p_val", np.nan)
+        if status == "gray" or pd.isna(p_val):
             cell_text = "N/A"
-        else:
+        elif status == "red":
             pre_text = format_value(row.get("mean_pre", np.nan))
             dur_text = format_value(row.get("mean_dur", np.nan))
             
             method_code = format_test_method_code(
-                row.get("test_method", "N/A"),
-            )            
-            cell_text = (f"{pre_text} → {dur_text}"
-                         f"<br><i>p</i>={row['p_val']:.3f}｜{method_code}")
-
-        font_color = "white" if row["status"] == "red" else "black"
-        annotations.append(
-            dict(
-                x=row["測站"],
-                y=row["測項"],
-                text=cell_text,
-                showarrow=False,
-                font=dict(color=font_color, size=15),
-                align="center",
+                row.get("test_method", "N/A")
             )
+            cell_text = (f"{pre_text} → {dur_text}"
+                         f"<br><i>p</i>={p_val:.3f}｜{method_code}"
+                        )
+        elif status == "green":
+            method_code = format_test_method_code(
+                row.get("test_method", "N/A")
+            )
+            cell_text = (f"<i>p</i>={p_val:.3f}｜{method_code}")
+        else:
+            cell_text = f"未知狀態：{status}"
+
+    font_color = "white" if status == "red" else "black"
+
+    annotations.append(
+        dict(
+            x=row["測站"],
+            y=row["測項"],
+            text=cell_text,
+            showarrow=False,
+            font=dict(
+                color=font_color,
+                size=14,
+            ),
+            align="center",
         )
+    )
 
     customdata = np.stack(
         [
